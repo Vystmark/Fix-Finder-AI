@@ -10,6 +10,8 @@ export interface ServiceProvider {
   description: string;
   availability: string;
   imageUrl?: string;
+  source: 'FixFinder' | 'Facebook' | 'Google' | 'Directory';
+  socialLink?: string;
 }
 
 export interface SearchParams {

@@ -3,18 +3,21 @@ import { ServiceProvider, AiAnalysisResult } from "../types";
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-// Using gemini-2.5-flash for speed and cost-effectiveness
-const MODEL_NAME = "gemini-2.5-flash";
+const MODEL_NAME = "gemini-3-flash-preview";
 
 export const findProviders = async (query: string, zipCode: string): Promise<ServiceProvider[]> => {
   try {
     const prompt = `
       Generate a realistic list of 6 local service providers for the trade or service: "${query}" in zip code "${zipCode}".
-      If the query is generic (e.g., "fix my house"), infer the most likely general contractor or handyman service.
+      Simulate a search that scans multiple sources: Google Business, Facebook Pages, and local FixFinder partners.
+      
       Return the data as a JSON array. 
-      Ensure names sound like authentic local small businesses. 
-      "distance" should be relative to the zip code (e.g., "2.5 miles").
-      "imageUrl" should be a keyword suitable for picsum photos (e.g. "plumber", "electrician", "tools").
+      - "source": Randomly assign one of ['FixFinder', 'Facebook', 'Google', 'Directory'].
+      - "socialLink": If source is Facebook, provide a realistic mock URL (e.g., facebook.com/businessname).
+      - "distance": relative to the zip code (e.g., "2.5 miles").
+      - "imageUrl": keyword for picsum (e.g. "plumber", "renovation").
+      
+      Ensure at least 2 results are from "Facebook" to show we find pros not on traditional search engines.
     `;
 
     const response = await ai.models.generateContent({
@@ -40,7 +43,9 @@ export const findProviders = async (query: string, zipCode: string): Promise<Ser
               },
               description: { type: Type.STRING },
               availability: { type: Type.STRING },
-              imageUrl: { type: Type.STRING }
+              imageUrl: { type: Type.STRING },
+              source: { type: Type.STRING },
+              socialLink: { type: Type.STRING }
             }
           }
         }
