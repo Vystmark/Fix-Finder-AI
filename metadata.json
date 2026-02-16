@@ -1,0 +1,7 @@
+{
+  "name": "FixFinder AI",
+  "description": "Smart home improvement directory connecting users with service providers using AI-driven matching and visual problem analysis.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
